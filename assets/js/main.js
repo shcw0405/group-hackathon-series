@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- Hero Canvas — Particle Network ----------
   const canvas = document.getElementById('heroCanvas');
+  if (canvas) {
   const ctx = canvas.getContext('2d');
   let particles = [];
   let mouseX = 0, mouseY = 0;
@@ -321,12 +322,15 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => {
     initParticles();
   });
+  } // end if (canvas)
 
   // ---------- Smooth anchor scroll ----------
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (!href.startsWith('#')) return; // skip cross-page links
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const target = document.querySelector(href);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
