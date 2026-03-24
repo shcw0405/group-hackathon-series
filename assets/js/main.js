@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Click burst effect
     document.addEventListener('click', (e) => {
+      const light = isLightTheme();
+      const color = light ? '#9a8a5a' : '#C0AE7F';
+      const glowColor = light ? 'rgba(154, 138, 90, 0.8)' : 'rgba(192, 174, 127, 0.8)';
       for (let i = 0; i < 6; i++) {
         const spark = document.createElement('div');
         spark.style.cssText = `
@@ -81,11 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
           top: ${e.clientY}px;
           width: 3px;
           height: 3px;
-          background: #C0AE7F;
+          background: ${color};
           pointer-events: none;
           z-index: 9999;
           image-rendering: pixelated;
-          box-shadow: 0 0 6px rgba(192, 174, 127, 0.8);
+          box-shadow: 0 0 6px ${glowColor};
         `;
         document.body.appendChild(spark);
 
@@ -242,10 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
     draw() {
       // Pixel-style square particles for hacker aesthetic
       const size = this.radius * 2;
-      ctx.fillStyle = `rgba(192, 174, 127, ${this.currentOpacity || this.opacity})`;
+      const light = isLightTheme();
+      const r = light ? 140 : 192, g = light ? 120 : 174, b = light ? 80 : 127;
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.currentOpacity || this.opacity})`;
       ctx.fillRect(Math.floor(this.x), Math.floor(this.y), size, size);
       // Glow effect
-      ctx.shadowColor = 'rgba(192, 174, 127, 0.3)';
+      ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
       ctx.shadowBlur = 8;
       ctx.fillRect(Math.floor(this.x), Math.floor(this.y), size, size);
       ctx.shadowBlur = 0;
@@ -261,6 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawConnections() {
+    const light = isLightTheme();
+    const r = light ? 140 : 192, g = light ? 120 : 174, b = light ? 80 : 127;
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
@@ -272,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.beginPath();
           ctx.moveTo(Math.floor(particles[i].x), Math.floor(particles[i].y));
           ctx.lineTo(Math.floor(particles[j].x), Math.floor(particles[j].y));
-          ctx.strokeStyle = `rgba(192, 174, 127, ${alpha})`;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
           ctx.lineWidth = 0.8;
           ctx.stroke();
         }
@@ -289,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.beginPath();
           ctx.moveTo(Math.floor(mouseX), Math.floor(mouseY));
           ctx.lineTo(Math.floor(p.x), Math.floor(p.y));
-          ctx.strokeStyle = `rgba(192, 174, 127, ${0.2 * (1 - dist / 200)})`;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.2 * (1 - dist / 200)})`;
           ctx.lineWidth = 0.6;
           ctx.stroke();
         }
@@ -336,6 +343,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // ---------- Theme Toggle ----------
+  const themeToggle = document.getElementById('themeToggle');
+
+  function getPreferredTheme() {
+    return localStorage.getItem('theme') || 'dark';
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }
+
+  setTheme(getPreferredTheme());
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+  }
+
+  function isLightTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light';
+  }
 
   // ---------- Background Music Toggle ----------
   const bgMusic = document.getElementById('bgMusic');
