@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const carouselFallback = document.getElementById('carouselFallback');
 
   if (carouselTrack) {
-    fetch('../data/editions/1/submissions.json')
+    fetch('../data/editions/1/submissions.json', { cache: 'no-store' })
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch');
         return res.json();
