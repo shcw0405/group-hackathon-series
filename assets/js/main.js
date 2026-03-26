@@ -505,4 +505,82 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ---------- Project Carousel ----------
+  const carouselTrack = document.getElementById('carouselTrack');
+  const carouselFallback = document.getElementById('carouselFallback');
+
+  if (carouselTrack) {
+    fetch('../data/editions/1/submissions.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(submissions => {
+        if (!submissions || submissions.length === 0) {
+          carouselFallback.style.display = '';
+          carouselTrack.style.display = 'none';
+          return;
+        }
+
+        function cardHTML(s) {
+          const avatarSrc = s.avatar_url || '';
+          const repoName = s.repo_name || s.github_url.split('/').pop() || 'Project';
+          const stars = s.stars != null ? s.stars : '--';
+          const forks = s.forks != null ? s.forks : '--';
+          const avatarEl = avatarSrc
+            ? `<img class="project-card__avatar" src="${avatarSrc}" alt="" loading="lazy">`
+            : '';
+
+          return `
+            <a class="project-card" href="${s.github_url}" target="_blank" rel="noopener">
+              <div class="project-card__header">
+                ${avatarEl}
+                <div>
+                  <div class="project-card__name">${repoName}</div>
+                  <div class="project-card__lead">${s.project_lead}</div>
+                </div>
+              </div>
+              ${s.participants ? `<div class="project-card__participants">${s.participants}</div>` : ''}
+              <div class="project-card__stats">
+                <span class="project-card__stat project-card__stat--gold">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+                  ${stars}
+                </span>
+                <span class="project-card__stat">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zM8 12.75a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg>
+                  ${forks}
+                </span>
+              </div>
+            </a>`;
+        }
+
+        // Build cards, duplicate for seamless loop
+        const cardsMarkup = submissions.map(cardHTML).join('');
+        carouselTrack.innerHTML = cardsMarkup + cardsMarkup;
+
+        // Dynamic animation duration: ~8s per card
+        const duration = submissions.length * 8;
+        carouselTrack.style.animationDuration = duration + 's';
+
+        // Register cursor hover for dynamically added cards
+        if (pixelCursor && cursor) {
+          carouselTrack.querySelectorAll('.project-card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+              cursor.classList.add('hover');
+              pixelCursor.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+              cursor.classList.remove('hover');
+              pixelCursor.classList.remove('hover');
+            });
+          });
+        }
+      })
+      .catch(err => {
+        console.warn('Could not load submissions:', err);
+        if (carouselFallback) carouselFallback.style.display = '';
+        carouselTrack.style.display = 'none';
+      });
+  }
+
 });

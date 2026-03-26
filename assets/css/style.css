@@ -1186,6 +1186,124 @@ body::after {
   object-fit: cover;
 }
 
+/* ---------- Project Carousel ---------- */
+.project-carousel {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 2rem 0;
+}
+
+.project-carousel__track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  padding: 0 1.5rem;
+  animation: carouselScroll 30s linear infinite;
+}
+
+.project-carousel__track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes carouselScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.project-carousel__fallback {
+  width: 100%;
+  padding: 3rem;
+  text-align: center;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.project-card {
+  flex-shrink: 0;
+  width: 280px;
+  padding: 1.5rem;
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color 0.3s ease, transform 0.3s var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.project-card:hover {
+  border-color: rgba(192, 174, 127, 0.3);
+  transform: translateY(-4px);
+}
+
+.project-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.project-card__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.project-card__name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.project-card__lead {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.project-card__participants {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.project-card__stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.project-card__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.project-card__stat svg {
+  width: 14px;
+  height: 14px;
+}
+
+.project-card__stat--gold {
+  color: var(--gold);
+}
+
 .edition-detail__content {
   padding: 0 0 clamp(5rem, 10vw, 8rem);
 }
@@ -1314,6 +1432,10 @@ body::after {
   .edition-detail__submit-visual {
     width: 100%;
     max-width: 280px;
+  }
+
+  .project-card {
+    width: 240px;
   }
 }
 
