@@ -1,0 +1,96 @@
+name: Process Project Submission
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  process-submission:
+    if: startsWith(github.event.issue.title, '[Project Submission]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse issue and save submission
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          # Extract edition number from title: "[Project Submission] Name - Hackathon #1" → "1"
+          EDITION=$(echo "$ISSUE_TITLE" | grep -oP 'Hackathon #\K\d+')
+          if [ -z "$EDITION" ]; then
+            echo "::error::Could not extract edition number from title: $ISSUE_TITLE"
+            exit 1
+          fi
+          echo "Edition: $EDITION"
+
+          # Extract fields from issue body
+          GITHUB_URL=$(echo "$ISSUE_BODY" | grep -oP '\*\*GitHub Repository:\*\* \K.*' | head -1 | xargs)
+          PROJECT_LEAD=$(echo "$ISSUE_BODY" | grep -oP '\*\*Project Lead:\*\* \K.*' | head -1 | xargs)
+          PARTICIPANTS=$(echo "$ISSUE_BODY" | grep -oP '\*\*Participants:\*\* \K.*' | head -1 | xargs)
+
+          # Extract description (everything after "### Description")
+          DESCRIPTION=$(echo "$ISSUE_BODY" | sed -n '/^### Description$/,$ { /^### Description$/d; p }' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+          echo "GitHub URL: $GITHUB_URL"
+          echo "Project Lead: $PROJECT_LEAD"
+          echo "Participants: $PARTICIPANTS"
+          echo "Description: $DESCRIPTION"
+
+          if [ -z "$GITHUB_URL" ] || [ -z "$PROJECT_LEAD" ]; then
+            echo "::error::Missing required fields (GitHub URL or Project Lead)"
+            exit 1
+          fi
+
+          # Ensure data directory exists
+          DATA_DIR="data/editions/${EDITION}"
+          DATA_FILE="${DATA_DIR}/submissions.json"
+          mkdir -p "$DATA_DIR"
+
+          # Initialize JSON file if it doesn't exist
+          if [ ! -f "$DATA_FILE" ]; then
+            echo "[]" > "$DATA_FILE"
+          fi
+
+          # Build new entry and append using jq
+          SUBMITTED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          jq --arg issue_number "$ISSUE_NUMBER" \
+             --arg github_url "$GITHUB_URL" \
+             --arg project_lead "$PROJECT_LEAD" \
+             --arg participants "$PARTICIPANTS" \
+             --arg description "$DESCRIPTION" \
+             --arg submitted_at "$SUBMITTED_AT" \
+             '. += [{
+               issue_number: ($issue_number | tonumber),
+               github_url: $github_url,
+               project_lead: $project_lead,
+               participants: $participants,
+               description: $description,
+               submitted_at: $submitted_at
+             }]' "$DATA_FILE" > tmp.json && mv tmp.json "$DATA_FILE"
+
+          echo "Updated $DATA_FILE"
+          cat "$DATA_FILE"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "Add project submission from issue #${{ github.event.issue.number }}"
+          git push
+
+      - name: Label and close issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --add-label "submission"
+          gh issue comment ${{ github.event.issue.number }} --body "✅ **Submission received!** Your project has been recorded successfully. Thank you for participating in the DSL Hackathon!"
+          gh issue close ${{ github.event.issue.number }} --reason completed

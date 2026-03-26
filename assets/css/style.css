@@ -1267,19 +1267,54 @@ body::after {
   border: 1px solid var(--border);
   border-left: 3px solid var(--gold);
   border-radius: 12px;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
   position: relative;
+  overflow: hidden;
 }
 
-.edition-detail__submit .edition-detail__section-title {
+.edition-detail__submit-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.edition-detail__submit-content .edition-detail__section-title {
   text-align: left;
 }
 
 .edition-detail__submit-desc {
   color: var(--text-muted);
-  max-width: 560px;
   margin-bottom: 1.75rem;
   line-height: 1.7;
+}
+
+.edition-detail__submit-visual {
+  flex: 0 0 300px;
+}
+
+.edition-detail__submit-img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.edition-detail__submit:hover .edition-detail__submit-img {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .edition-detail__submit {
+    flex-direction: column;
+    padding: 2rem 1.5rem 2rem 2rem;
+  }
+
+  .edition-detail__submit-visual {
+    width: 100%;
+    max-width: 280px;
+  }
 }
 
 /* ── Modal ── */
