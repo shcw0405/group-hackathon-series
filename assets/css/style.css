@@ -1540,6 +1540,54 @@ body::after {
   }
 }
 
+/* ── Pre-register Section ── */
+.edition-detail__prereg {
+  margin-top: 4rem;
+  padding: 2.5rem 3rem;
+  background: linear-gradient(135deg, rgba(192, 174, 127, 0.08) 0%, rgba(192, 174, 127, 0.02) 100%);
+  border: 1px dashed var(--gold);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.edition-detail__prereg-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.edition-detail__prereg-icon {
+  font-size: 1.75rem;
+}
+
+.edition-detail__prereg-header .edition-detail__section-title {
+  text-align: center;
+}
+
+.edition-detail__prereg-desc {
+  color: var(--text-muted);
+  margin-bottom: 1.75rem;
+  line-height: 1.7;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.edition-detail__prereg-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .edition-detail__prereg {
+    padding: 2rem 1.5rem;
+  }
+}
+
 /* ── Submit Project Section ── */
 .edition-detail__submit {
   margin-top: 4rem;

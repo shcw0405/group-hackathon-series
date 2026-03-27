@@ -554,20 +554,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!purpose.value.trim()) { purpose.classList.add('error'); valid = false; }
       if (!valid) return;
 
-      const title = `[Pre-registration] ${name.value.trim()} - Hackathon #1`;
-      const bodyParts = [
-        `## Pre-registration`,
-        `**Project Name:** ${name.value.trim()}`,
+      const commentBody = [
+        `## ${name.value.trim()}`,
         `**Project Lead:** ${lead.value.trim()}`,
         ``,
         `### Purpose / Goal`,
         purpose.value.trim(),
-      ];
+      ].join('\n');
 
-      const issueUrl = `https://github.com/Dylan-Qin/group-hackathon-series/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(bodyParts.join('\n'))}&labels=pre-registration`;
+      // Post as a comment on the pinned tracking issue #3
+      const commentUrl = `https://github.com/Dylan-Qin/group-hackathon-series/issues/3#issuecomment-new`;
 
-      window.open(issueUrl, '_blank');
-      showToast('Redirected to GitHub — please confirm and submit the issue.');
+      // Copy body to clipboard for easy pasting, then open the issue
+      navigator.clipboard.writeText(commentBody).then(() => {
+        window.open(commentUrl, '_blank');
+        showToast('Comment copied to clipboard — paste it in the issue to complete pre-registration.');
+      }).catch(() => {
+        // Fallback: open issue with no clipboard
+        window.open(commentUrl, '_blank');
+        showToast('Redirected to GitHub — please post your idea as a comment.');
+      });
       preRegForm.reset();
       closePreReg();
     });
