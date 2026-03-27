@@ -1560,7 +1560,8 @@ body::after {
 
 .edition-detail__prereg-icon {
   font-size: 1.75rem;
-  line-height: 1;
+  line-height: 0;
+  transform: translateY(-10px);
 }
 
 .edition-detail__prereg-header .edition-detail__section-title {
