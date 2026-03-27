@@ -223,6 +223,37 @@
           </div>
         </div>
 
+        <!-- Pre-register Your Idea -->
+        <div class="edition-detail__submit reveal-up" style="--delay: 0.25s">
+          <div class="edition-detail__submit-content">
+            <h2 class="edition-detail__section-title">Pre-register Your Idea</h2>
+            <p class="edition-detail__submit-desc">
+              Have a project idea for the hackathon? Register it now so others can find you, discuss, and form teams before the event officially begins.
+            </p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn btn--primary" id="preRegBtn">
+                <span>Pre-register</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                  <path d="M20 8v6M23 11h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <a class="btn btn--outline" id="viewPreRegsBtn" href="https://github.com/Dylan-Qin/group-hackathon-series/issues?q=is%3Aissue+label%3Apre-registration" target="_blank" rel="noopener">
+                <span>View Pre-registrations</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M15 3h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="edition-detail__submit-visual">
+            <img src="../assets/img/edition1-img1.png" alt="Team Formation" class="edition-detail__submit-img">
+          </div>
+        </div>
+
         <!-- Submit Project -->
         <div class="edition-detail__submit reveal-up" style="--delay: 0.3s">
           <div class="edition-detail__submit-content">
@@ -295,6 +326,43 @@
         </div>
         <div class="modal__footer">
           <button type="button" class="btn btn--outline" id="modalCancel">Cancel</button>
+          <button type="submit" class="btn btn--primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pre-register Modal -->
+  <div class="modal-overlay" id="preRegModal">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title">Pre-register Your Idea</h3>
+        <button class="modal__close" id="preRegClose" aria-label="Close modal">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <form id="preRegForm" novalidate>
+        <div class="modal__body">
+          <div class="form-group">
+            <label class="form-label" for="preRegLead">Project Lead <span class="form-required">*</span></label>
+            <input class="form-input" type="text" id="preRegLead" placeholder="Your name" required>
+            <span class="form-error" id="preRegLeadError">Project lead is required</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="preRegName">Project Name <span class="form-required">*</span></label>
+            <input class="form-input" type="text" id="preRegName" placeholder="Your project name" required>
+            <span class="form-error" id="preRegNameError">Project name is required</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="preRegPurpose">Purpose / Goal <span class="form-required">*</span></label>
+            <textarea class="form-input form-textarea" id="preRegPurpose" rows="4" placeholder="What do you want to build and why?" required></textarea>
+            <span class="form-error" id="preRegPurposeError">Purpose is required</span>
+          </div>
+        </div>
+        <div class="modal__footer">
+          <button type="button" class="btn btn--outline" id="preRegCancel">Cancel</button>
           <button type="submit" class="btn btn--primary">Submit</button>
         </div>
       </form>

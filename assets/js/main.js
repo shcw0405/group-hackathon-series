@@ -502,6 +502,77 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ---------- Pre-register Modal ----------
+  const preRegBtn = document.getElementById('preRegBtn');
+  const preRegModal = document.getElementById('preRegModal');
+  const preRegForm = document.getElementById('preRegForm');
+  const preRegClose = document.getElementById('preRegClose');
+  const preRegCancel = document.getElementById('preRegCancel');
+
+  if (preRegBtn && preRegModal) {
+    function openPreReg() {
+      preRegModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePreReg() {
+      preRegModal.classList.remove('active');
+      document.body.style.overflow = '';
+      preRegForm.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+    }
+
+    preRegBtn.addEventListener('click', () => {
+      const now = new Date();
+      const start = new Date('2026-04-06T00:00:00');
+      if (now >= start) {
+        showToast('Pre-registration has closed — the hackathon has begun!', true);
+        return;
+      }
+      openPreReg();
+    });
+
+    preRegClose.addEventListener('click', closePreReg);
+    preRegCancel.addEventListener('click', closePreReg);
+    preRegModal.addEventListener('click', (e) => {
+      if (e.target === preRegModal) closePreReg();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && preRegModal.classList.contains('active')) closePreReg();
+    });
+
+    preRegForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      preRegForm.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+
+      const lead = document.getElementById('preRegLead');
+      const name = document.getElementById('preRegName');
+      const purpose = document.getElementById('preRegPurpose');
+
+      let valid = true;
+      if (!lead.value.trim()) { lead.classList.add('error'); valid = false; }
+      if (!name.value.trim()) { name.classList.add('error'); valid = false; }
+      if (!purpose.value.trim()) { purpose.classList.add('error'); valid = false; }
+      if (!valid) return;
+
+      const title = `[Pre-registration] ${name.value.trim()} - Hackathon #1`;
+      const bodyParts = [
+        `## Pre-registration`,
+        `**Project Name:** ${name.value.trim()}`,
+        `**Project Lead:** ${lead.value.trim()}`,
+        ``,
+        `### Purpose / Goal`,
+        purpose.value.trim(),
+      ];
+
+      const issueUrl = `https://github.com/Dylan-Qin/group-hackathon-series/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(bodyParts.join('\n'))}&labels=pre-registration`;
+
+      window.open(issueUrl, '_blank');
+      showToast('Redirected to GitHub — please confirm and submit the issue.');
+      preRegForm.reset();
+      closePreReg();
+    });
+  }
+
   // ---------- Project Carousel ----------
   const carouselTrack = document.getElementById('carouselTrack');
   const carouselFallback = document.getElementById('carouselFallback');
