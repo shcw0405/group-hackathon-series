@@ -376,28 +376,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const iconOff = musicToggle?.querySelector('.music-icon-off');
   let musicPlaying = false;
 
-  function startMusic() {
-    if (musicPlaying) return;
-    bgMusic.play().then(() => {
-      musicPlaying = true;
-      iconOn.style.display = 'block';
-      iconOff.style.display = 'none';
-    }).catch(() => {});
-  }
-
   if (musicToggle && bgMusic) {
     bgMusic.volume = 0.3;
 
-    // Try autoplay immediately
-    startMusic();
-
-    // Fallback: play on first user interaction (browser autoplay policy)
-    const autoplayEvents = ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'];
-    function onFirstInteraction() {
-      startMusic();
-      autoplayEvents.forEach(e => document.removeEventListener(e, onFirstInteraction));
-    }
-    autoplayEvents.forEach(e => document.addEventListener(e, onFirstInteraction, { once: false }));
+    // Default: music off, user clicks to play
+    iconOn.style.display = 'none';
+    iconOff.style.display = 'block';
 
     musicToggle.addEventListener('click', () => {
       if (musicPlaying) {
