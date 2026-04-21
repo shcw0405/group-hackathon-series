@@ -430,14 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitBtn.addEventListener('click', () => {
       const now = new Date();
-      const start = new Date('2026-04-06T00:00:00');
-      const end = new Date('2026-04-20T00:00:00');
-      if (now < start) {
-        showToast('Submission is not open yet — starts April 6, 2026', true);
+      const tz = 'Asia/Shanghai';
+      const nowCST = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+      const start = new Date('2026-04-20T00:00:00+08:00');
+      const end   = new Date('2026-05-06T00:00:00+08:00');
+      if (nowCST < start) {
+        showToast('Submission is not open yet — starts April 20, 2026', true);
         return;
       }
-      if (now >= end) {
-        showToast('Submission has ended — closed after April 19, 2026', true);
+      if (nowCST >= end) {
+        showToast('Submission has ended — closed after May 05, 2026', true);
         return;
       }
       openModal();
@@ -523,8 +525,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     preRegBtn.addEventListener('click', () => {
       const now = new Date();
-      const start = new Date('2026-04-06T00:00:00');
-      if (now >= start) {
+      const tz = 'Asia/Shanghai';
+      const nowCST = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+      const start = new Date('2026-04-20T00:00:00+08:00');
+      if (nowCST >= start) {
         showToast('Pre-registration has closed — the hackathon has begun!', true);
         return;
       }

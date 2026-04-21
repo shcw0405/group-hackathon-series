@@ -12,6 +12,15 @@ jobs:
       issues: write
 
     steps:
+      - name: Check pre-registration deadline
+        run: |
+          NOW=$(TZ=Asia/Shanghai date +%s)
+          DEADLINE=$(TZ=Asia/Shanghai date -d '2026-04-20 00:00:00' +%s)
+          if [ "$NOW" -ge "$DEADLINE" ]; then
+            echo "::error::Pre-registration closed on Apr 20, 2026 (Asia/Shanghai). The hackathon has begun."
+            exit 1
+          fi
+
       - name: Post to tracking issue and close
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -13,6 +13,16 @@ jobs:
       issues: write
 
     steps:
+      - name: Check submission window
+        run: |
+          NOW=$(TZ=Asia/Shanghai date +%s)
+          OPEN=$(TZ=Asia/Shanghai date -d '2026-04-20 00:00:00' +%s)
+          CLOSE=$(TZ=Asia/Shanghai date -d '2026-05-06 00:00:00' +%s)
+          if [ "$NOW" -lt "$OPEN" ] || [ "$NOW" -ge "$CLOSE" ]; then
+            echo "::error::Submission window is Apr 20 – May 05, 2026 (Asia/Shanghai). Current time is outside this range."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
